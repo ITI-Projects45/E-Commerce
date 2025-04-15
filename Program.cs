@@ -1,5 +1,7 @@
 
-using E_Commerce.Models.DataBase;
+using E_Commerce.DB;
+using E_Commerce.DB.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace E_Commerce
@@ -18,9 +20,13 @@ namespace E_Commerce
             builder.Services.AddSwaggerGen();
 
             // Register DataBase
-            builder.Services.AddDbContext<DataBaseContext>(option => {
+            builder.Services.AddDbContext<DataBaseContext>(option =>
+            {
                 option.UseSqlServer(builder.Configuration.GetConnectionString("CS"));
             });
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+               .AddEntityFrameworkStores<DataBaseContext>()
+               .AddDefaultTokenProviders();
 
             var app = builder.Build();
 

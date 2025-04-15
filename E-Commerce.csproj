@@ -20,4 +20,9 @@
     <Folder Include="Controllers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\E-Commerce.DB\E-Commerce.DB.csproj" />
+    <ProjectReference Include="..\E-Commerce.Repos\E-Commerce.Repos.csproj" />
+  </ItemGroup>
+
 </Project>
