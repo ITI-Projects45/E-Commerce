@@ -36,10 +36,10 @@ namespace E_Commerce.Repos.Repository
             return _DataBaseContext.Set<T>().Find(id);
         }
 
-        public void Save()
-        {
-            _DataBaseContext.SaveChanges();
-        }
+        //public void Save()
+        //{
+        //    _DataBaseContext.SaveChanges();
+        //}
 
         public void Update(T entity)
         {

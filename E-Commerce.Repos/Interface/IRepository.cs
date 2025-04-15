@@ -13,6 +13,6 @@ namespace E_Commerce.Repos.Interface
         void Create(T entity);
         void Update(T entity);
         void Delete(int id);
-        void Save();
+        //void Save();
     }
 }
