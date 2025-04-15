@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "I:\\23-web api\\Project\\E-Commerce.Repos\\E-Commerce.Repos.csproj": {}
+    "D:\\Abdeltawab\\2024\\Asp.Net Core\\Study\\E-Commerce\\E-Commerce.Repos\\E-Commerce.Repos.csproj": {}
   },
   "projects": {
-    "I:\\23-web api\\Project\\E-Commerce.DB\\E-Commerce.DB.csproj": {
+    "D:\\Abdeltawab\\2024\\Asp.Net Core\\Study\\E-Commerce\\E-Commerce.DB\\E-Commerce.DB.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "I:\\23-web api\\Project\\E-Commerce.DB\\E-Commerce.DB.csproj",
+        "projectUniqueName": "D:\\Abdeltawab\\2024\\Asp.Net Core\\Study\\E-Commerce\\E-Commerce.DB\\E-Commerce.DB.csproj",
         "projectName": "E-Commerce.DB",
-        "projectPath": "I:\\23-web api\\Project\\E-Commerce.DB\\E-Commerce.DB.csproj",
-        "packagesPath": "C:\\Users\\ITC\\.nuget\\packages\\",
-        "outputPath": "I:\\23-web api\\Project\\E-Commerce.DB\\obj\\",
+        "projectPath": "D:\\Abdeltawab\\2024\\Asp.Net Core\\Study\\E-Commerce\\E-Commerce.DB\\E-Commerce.DB.csproj",
+        "packagesPath": "C:\\Users\\Moham\\.nuget\\packages\\",
+        "outputPath": "D:\\Abdeltawab\\2024\\Asp.Net Core\\Study\\E-Commerce\\E-Commerce.DB\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\ITC\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Moham\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -87,24 +87,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "I:\\23-web api\\Project\\E-Commerce.Repos\\E-Commerce.Repos.csproj": {
+    "D:\\Abdeltawab\\2024\\Asp.Net Core\\Study\\E-Commerce\\E-Commerce.Repos\\E-Commerce.Repos.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "I:\\23-web api\\Project\\E-Commerce.Repos\\E-Commerce.Repos.csproj",
+        "projectUniqueName": "D:\\Abdeltawab\\2024\\Asp.Net Core\\Study\\E-Commerce\\E-Commerce.Repos\\E-Commerce.Repos.csproj",
         "projectName": "E-Commerce.Repos",
-        "projectPath": "I:\\23-web api\\Project\\E-Commerce.Repos\\E-Commerce.Repos.csproj",
-        "packagesPath": "C:\\Users\\ITC\\.nuget\\packages\\",
-        "outputPath": "I:\\23-web api\\Project\\E-Commerce.Repos\\obj\\",
+        "projectPath": "D:\\Abdeltawab\\2024\\Asp.Net Core\\Study\\E-Commerce\\E-Commerce.Repos\\E-Commerce.Repos.csproj",
+        "packagesPath": "C:\\Users\\Moham\\.nuget\\packages\\",
+        "outputPath": "D:\\Abdeltawab\\2024\\Asp.Net Core\\Study\\E-Commerce\\E-Commerce.Repos\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\ITC\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Moham\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -119,8 +119,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "I:\\23-web api\\Project\\E-Commerce.DB\\E-Commerce.DB.csproj": {
-                "projectPath": "I:\\23-web api\\Project\\E-Commerce.DB\\E-Commerce.DB.csproj"
+              "D:\\Abdeltawab\\2024\\Asp.Net Core\\Study\\E-Commerce\\E-Commerce.DB\\E-Commerce.DB.csproj": {
+                "projectPath": "D:\\Abdeltawab\\2024\\Asp.Net Core\\Study\\E-Commerce\\E-Commerce.DB\\E-Commerce.DB.csproj"
               }
             }
           }
@@ -156,7 +156,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

@@ -1,6 +1,8 @@
 
 using E_Commerce.DB;
 using E_Commerce.DB.Models;
+using E_Commerce.Repos.Interface;
+using E_Commerce.Repos.Repository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,6 +29,8 @@ namespace E_Commerce
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
                .AddEntityFrameworkStores<DataBaseContext>()
                .AddDefaultTokenProviders();
+
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             var app = builder.Build();
 
