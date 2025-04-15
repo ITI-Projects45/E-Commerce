@@ -7,7 +7,7 @@ using E_Commerce.Models;
 
 namespace E_Commerce.Repos.Interface
 {
-     public interface  ICategotyRepository :IRepository<Category>
+     public interface  ICategoryRepository :IRepository<Category>
     {
     }
 }

@@ -10,9 +10,9 @@ using E_Commerce.Repos.Interface;
 namespace E_Commerce.Repos.Repository
 {
 
-    public class CategotyRepository : Repository<Category>, ICategotyRepository
+    public class CategoryRepository : Repository<Category>, ICategoryRepository
     {
-        public CategotyRepository(DataBaseContext DataBaseContext) : base(DataBaseContext)
+        public CategoryRepository(DataBaseContext DataBaseContext) : base(DataBaseContext)
         {
         }
     }

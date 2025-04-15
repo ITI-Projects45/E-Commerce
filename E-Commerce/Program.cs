@@ -1,4 +1,5 @@
 
+using E_Commerce.DAL;
 using E_Commerce.DB;
 using E_Commerce.DB.Models;
 using E_Commerce.Repos.Interface;
@@ -30,7 +31,7 @@ namespace E_Commerce
                .AddEntityFrameworkStores<DataBaseContext>()
                .AddDefaultTokenProviders();
 
-            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddSingleton<IUnitOfWork, UnitOfWork>();
 
             var app = builder.Build();
 

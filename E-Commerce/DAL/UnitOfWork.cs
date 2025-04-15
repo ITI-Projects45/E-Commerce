@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 using E_Commerce.DB;
 using E_Commerce.Models;
 using E_Commerce.Repos.Interface;
+using E_Commerce.Repos.Repository;
 
-namespace E_Commerce.Repos.Repository
+namespace E_Commerce.DAL
 {
     public class UnitOfWork : IUnitOfWork
     {
@@ -15,7 +16,7 @@ namespace E_Commerce.Repos.Repository
         private IAddressRepository AddressRepository;
         private ICartItemRepository CartItemRepository;
         private ICartRepository CartRepository;
-        private ICategotyRepository CategotyRepository;
+        private ICategoryRepository CategoryRepository;
         private IImageRepository ImageRepository;
         private IOrderItemRepository OrderItemRepository;
         private IOrderRepository OrderRepository;
@@ -27,7 +28,7 @@ namespace E_Commerce.Repos.Repository
         {
             this.context = context;
         }
-        public IAddressRepository Addresses
+        public IAddressRepository AddressRepo
         {
             get
             {
@@ -40,7 +41,7 @@ namespace E_Commerce.Repos.Repository
             }
         }
 
-        public ICartItemRepository CartItems
+        public ICartItemRepository CartItemRepo
         {
             get
             {
@@ -53,7 +54,7 @@ namespace E_Commerce.Repos.Repository
             }
         }
 
-        public ICartRepository Carts
+        public ICartRepository CartRepo
         {
             get
             {
@@ -66,20 +67,9 @@ namespace E_Commerce.Repos.Repository
             }
         }
 
-        public ICategotyRepository Categoties
-        {
-            get
-            {
-                if (CategotyRepository == null)
-                {
-                    CategotyRepository = new CategotyRepository(context);
 
-                }
-                return CategotyRepository;
-            }
-        }
 
-        public IImageRepository Images
+        public IImageRepository ImageRepo
         {
             get
             {
@@ -91,7 +81,7 @@ namespace E_Commerce.Repos.Repository
                 return ImageRepository;
             }
         }
-        public IOrderItemRepository OrderItems
+        public IOrderItemRepository OrderItemRepo
         {
             get
             {
@@ -104,7 +94,7 @@ namespace E_Commerce.Repos.Repository
             }
         }
 
-        public IOrderRepository Orders
+        public IOrderRepository OrderRepo
         {
             get
             {
@@ -117,7 +107,7 @@ namespace E_Commerce.Repos.Repository
             }
         }
 
-        public IPaymentRepository Payements
+        public IPaymentRepository PayementRepo
         {
             get
             {
@@ -130,7 +120,7 @@ namespace E_Commerce.Repos.Repository
             }
         }
 
-        public IProductRepository Products
+        public IProductRepository ProductRepo
         {
             get
             {
@@ -143,7 +133,7 @@ namespace E_Commerce.Repos.Repository
             }
         }
 
-        public IReviewRepository Reviews
+        public IReviewRepository ReviewRepo
         {
             get
             {
@@ -155,7 +145,7 @@ namespace E_Commerce.Repos.Repository
                 return ReviewRepository;
             }
         }
-        public IVideoRepository Videos
+        public IVideoRepository VideoRepo
         {
             get
             {
@@ -168,15 +158,27 @@ namespace E_Commerce.Repos.Repository
             }
         }
 
+        public ICategoryRepository CategoryRepo
+        {
+            get
+            {
+                if (CategoryRepository == null)
+                {
+                    CategoryRepository = new CategoryRepository(context);
+                }
+                return CategoryRepository;
+            }
+        }
+
         public async Task<int> SaveChangesAsync()
         {
             return await context.SaveChangesAsync();
         }
 
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
+        //public void Dispose()
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public IRepository<T> Repositoray<T>() where T : class
         {
