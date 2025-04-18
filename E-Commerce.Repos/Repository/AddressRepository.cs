@@ -9,7 +9,7 @@ using E_Commerce.Repos.Interface;
 
 namespace E_Commerce.Repos.Repository
 {
-    public class AddressRepository : Repository<Address>, IAddressRepository
+    public class AddressRepository : Repository<CartItem>, IAddressRepository
     {
         public AddressRepository(DataBaseContext DataBaseContext) : base(DataBaseContext)
         {

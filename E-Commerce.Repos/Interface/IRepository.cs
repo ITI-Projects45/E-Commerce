@@ -8,7 +8,7 @@ namespace E_Commerce.Repos.Interface
 {
     public interface IRepository<T>
     {
-        IQueryable<T> GetAll(int page = 1);
+        IQueryable<T> GetAll(int page = 1, int Amount = 10);
         T GetById(int id);
         void Create(T entity);
         void Update(T entity);

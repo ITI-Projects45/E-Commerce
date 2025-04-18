@@ -31,7 +31,7 @@ namespace E_Commerce
                .AddEntityFrameworkStores<DataBaseContext>()
                .AddDefaultTokenProviders();
 
-            builder.Services.AddSingleton<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             var app = builder.Build();
 

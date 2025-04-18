@@ -2940,23 +2940,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Moham\\.nuget\\packages\\": {},
+    "C:\\Users\\David\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Abdeltawab\\2024\\Asp.Net Core\\Study\\E-Commerce\\E-Commerce.Repos\\E-Commerce.Repos.csproj",
+      "projectUniqueName": "F:\\Dot_Net_9_Month\\18 Web API\\E-Commerce\\E-Commerce.Repos\\E-Commerce.Repos.csproj",
       "projectName": "E-Commerce.Repos",
-      "projectPath": "D:\\Abdeltawab\\2024\\Asp.Net Core\\Study\\E-Commerce\\E-Commerce.Repos\\E-Commerce.Repos.csproj",
-      "packagesPath": "C:\\Users\\Moham\\.nuget\\packages\\",
-      "outputPath": "D:\\Abdeltawab\\2024\\Asp.Net Core\\Study\\E-Commerce\\E-Commerce.Repos\\obj\\",
+      "projectPath": "F:\\Dot_Net_9_Month\\18 Web API\\E-Commerce\\E-Commerce.Repos\\E-Commerce.Repos.csproj",
+      "packagesPath": "C:\\Users\\David\\.nuget\\packages\\",
+      "outputPath": "F:\\Dot_Net_9_Month\\18 Web API\\E-Commerce\\E-Commerce.Repos\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\Moham\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\David\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -2971,8 +2971,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "D:\\Abdeltawab\\2024\\Asp.Net Core\\Study\\E-Commerce\\E-Commerce.DB\\E-Commerce.DB.csproj": {
-              "projectPath": "D:\\Abdeltawab\\2024\\Asp.Net Core\\Study\\E-Commerce\\E-Commerce.DB\\E-Commerce.DB.csproj"
+            "F:\\Dot_Net_9_Month\\18 Web API\\E-Commerce\\E-Commerce.DB\\E-Commerce.DB.csproj": {
+              "projectPath": "F:\\Dot_Net_9_Month\\18 Web API\\E-Commerce\\E-Commerce.DB\\E-Commerce.DB.csproj"
             }
           }
         }
@@ -2987,7 +2987,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "9.0.200"
+      "SdkAnalysisLevel": "9.0.100"
     },
     "frameworks": {
       "net8.0": {
@@ -3008,7 +3008,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

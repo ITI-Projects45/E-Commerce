@@ -29,3 +29,19 @@ D:\Abdeltawab\2024\Asp.Net Core\Study\E-Commerce\E-Commerce.Repos\bin\Debug\net8
 D:\Abdeltawab\2024\Asp.Net Core\Study\E-Commerce\E-Commerce.Repos\bin\Debug\net8.0\E-Commerce.DB.pdb
 D:\Abdeltawab\2024\Asp.Net Core\Study\E-Commerce\E-Commerce.Repos\obj\Debug\net8.0\E-Commer.01A7C4CB.Up2Date
 D:\Abdeltawab\2024\Asp.Net Core\Study\E-Commerce\E-Commerce.Repos\obj\Debug\net8.0\ref\E-Commerce.Repos.dll
+F:\Dot_Net_9_Month\18 Web API\E-Commerce\E-Commerce.Repos\bin\Debug\net8.0\E-Commerce.Repos.deps.json
+F:\Dot_Net_9_Month\18 Web API\E-Commerce\E-Commerce.Repos\bin\Debug\net8.0\E-Commerce.Repos.dll
+F:\Dot_Net_9_Month\18 Web API\E-Commerce\E-Commerce.Repos\bin\Debug\net8.0\E-Commerce.Repos.pdb
+F:\Dot_Net_9_Month\18 Web API\E-Commerce\E-Commerce.Repos\bin\Debug\net8.0\E-Commerce.DB.dll
+F:\Dot_Net_9_Month\18 Web API\E-Commerce\E-Commerce.Repos\bin\Debug\net8.0\E-Commerce.DB.pdb
+F:\Dot_Net_9_Month\18 Web API\E-Commerce\E-Commerce.Repos\obj\Debug\net8.0\E-Commerce.Repos.csproj.AssemblyReference.cache
+F:\Dot_Net_9_Month\18 Web API\E-Commerce\E-Commerce.Repos\obj\Debug\net8.0\E-Commerce.Repos.GeneratedMSBuildEditorConfig.editorconfig
+F:\Dot_Net_9_Month\18 Web API\E-Commerce\E-Commerce.Repos\obj\Debug\net8.0\E-Commerce.Repos.AssemblyInfoInputs.cache
+F:\Dot_Net_9_Month\18 Web API\E-Commerce\E-Commerce.Repos\obj\Debug\net8.0\E-Commerce.Repos.AssemblyInfo.cs
+F:\Dot_Net_9_Month\18 Web API\E-Commerce\E-Commerce.Repos\obj\Debug\net8.0\E-Commerce.Repos.csproj.CoreCompileInputs.cache
+F:\Dot_Net_9_Month\18 Web API\E-Commerce\E-Commerce.Repos\obj\Debug\net8.0\E-Commerce.Repos.sourcelink.json
+F:\Dot_Net_9_Month\18 Web API\E-Commerce\E-Commerce.Repos\obj\Debug\net8.0\E-Commer.01A7C4CB.Up2Date
+F:\Dot_Net_9_Month\18 Web API\E-Commerce\E-Commerce.Repos\obj\Debug\net8.0\E-Commerce.Repos.dll
+F:\Dot_Net_9_Month\18 Web API\E-Commerce\E-Commerce.Repos\obj\Debug\net8.0\refint\E-Commerce.Repos.dll
+F:\Dot_Net_9_Month\18 Web API\E-Commerce\E-Commerce.Repos\obj\Debug\net8.0\E-Commerce.Repos.pdb
+F:\Dot_Net_9_Month\18 Web API\E-Commerce\E-Commerce.Repos\obj\Debug\net8.0\ref\E-Commerce.Repos.dll

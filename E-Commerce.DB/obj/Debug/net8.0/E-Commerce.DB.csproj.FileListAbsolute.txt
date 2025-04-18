@@ -27,3 +27,18 @@ D:\Abdeltawab\2024\Asp.Net Core\Study\E-Commerce\E-Commerce.DB\obj\Debug\net8.0\
 D:\Abdeltawab\2024\Asp.Net Core\Study\E-Commerce\E-Commerce.DB\obj\Debug\net8.0\E-Commerce.DB.pdb
 D:\Abdeltawab\2024\Asp.Net Core\Study\E-Commerce\E-Commerce.DB\obj\Debug\net8.0\E-Commerce.DB.genruntimeconfig.cache
 D:\Abdeltawab\2024\Asp.Net Core\Study\E-Commerce\E-Commerce.DB\obj\Debug\net8.0\ref\E-Commerce.DB.dll
+F:\Dot_Net_9_Month\18 Web API\E-Commerce\E-Commerce.DB\bin\Debug\net8.0\E-Commerce.DB.deps.json
+F:\Dot_Net_9_Month\18 Web API\E-Commerce\E-Commerce.DB\bin\Debug\net8.0\E-Commerce.DB.runtimeconfig.json
+F:\Dot_Net_9_Month\18 Web API\E-Commerce\E-Commerce.DB\bin\Debug\net8.0\E-Commerce.DB.dll
+F:\Dot_Net_9_Month\18 Web API\E-Commerce\E-Commerce.DB\bin\Debug\net8.0\E-Commerce.DB.pdb
+F:\Dot_Net_9_Month\18 Web API\E-Commerce\E-Commerce.DB\obj\Debug\net8.0\E-Commerce.DB.csproj.AssemblyReference.cache
+F:\Dot_Net_9_Month\18 Web API\E-Commerce\E-Commerce.DB\obj\Debug\net8.0\E-Commerce.DB.GeneratedMSBuildEditorConfig.editorconfig
+F:\Dot_Net_9_Month\18 Web API\E-Commerce\E-Commerce.DB\obj\Debug\net8.0\E-Commerce.DB.AssemblyInfoInputs.cache
+F:\Dot_Net_9_Month\18 Web API\E-Commerce\E-Commerce.DB\obj\Debug\net8.0\E-Commerce.DB.AssemblyInfo.cs
+F:\Dot_Net_9_Month\18 Web API\E-Commerce\E-Commerce.DB\obj\Debug\net8.0\E-Commerce.DB.csproj.CoreCompileInputs.cache
+F:\Dot_Net_9_Month\18 Web API\E-Commerce\E-Commerce.DB\obj\Debug\net8.0\E-Commerce.DB.sourcelink.json
+F:\Dot_Net_9_Month\18 Web API\E-Commerce\E-Commerce.DB\obj\Debug\net8.0\E-Commerce.DB.dll
+F:\Dot_Net_9_Month\18 Web API\E-Commerce\E-Commerce.DB\obj\Debug\net8.0\refint\E-Commerce.DB.dll
+F:\Dot_Net_9_Month\18 Web API\E-Commerce\E-Commerce.DB\obj\Debug\net8.0\E-Commerce.DB.pdb
+F:\Dot_Net_9_Month\18 Web API\E-Commerce\E-Commerce.DB\obj\Debug\net8.0\E-Commerce.DB.genruntimeconfig.cache
+F:\Dot_Net_9_Month\18 Web API\E-Commerce\E-Commerce.DB\obj\Debug\net8.0\ref\E-Commerce.DB.dll

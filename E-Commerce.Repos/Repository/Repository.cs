@@ -12,12 +12,12 @@ namespace E_Commerce.Repos.Repository
             _DataBaseContext = DataBaseContext;
         }
 
-        public void Create(T entity)
+        public virtual void Create(T entity)
         {
             _DataBaseContext.Set<T>().Add(entity);
         }
 
-        public void Delete(int id)
+        public virtual void Delete(int id)
         {
             T entity = GetById(id);
             if (entity != null)
@@ -26,12 +26,12 @@ namespace E_Commerce.Repos.Repository
             }
         }
 
-        public IQueryable<T> GetAll(int page = 1)
+        public virtual IQueryable<T> GetAll(int page = 1, int Amount = 10)
         {
-            return _DataBaseContext.Set<T>().Skip((page-1) * 10).Take(10);
+            return _DataBaseContext.Set<T>().Skip((page-1) * Amount).Take(Amount);
         }
 
-        public T GetById(int id)
+        public virtual T GetById(int id)
         {
             return _DataBaseContext.Set<T>().Find(id);
         }
@@ -41,7 +41,7 @@ namespace E_Commerce.Repos.Repository
         //    _DataBaseContext.SaveChanges();
         //}
 
-        public void Update(T entity)
+        public virtual void Update(T entity)
         {
 
             _DataBaseContext.Set<T>().Update(entity);

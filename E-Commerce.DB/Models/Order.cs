@@ -13,7 +13,7 @@ namespace E_Commerce.Models
 
         [ForeignKey("Address")]
         public int AddresId { get; set; }
-        public Address? Address { get; set; }
+        public CartItem? Address { get; set; }
 
         public Payment? Payment { get; set; }
         public List<OrderItem>? OrderItem { get; set; }
