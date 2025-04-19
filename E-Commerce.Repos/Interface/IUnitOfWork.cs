@@ -21,7 +21,7 @@ namespace E_Commerce.Repos.Interface
         IReviewRepository ReviewRepo { get; }
         IVideoRepository VideoRepo { get; }
 
-        Task<int> SaveChangesAsync();
+        void SaveChangesAsync();
 
 
     }

@@ -170,9 +170,9 @@ namespace E_Commerce.DAL
             }
         }
 
-        public async Task<int> SaveChangesAsync()
+        public async void SaveChangesAsync()
         {
-            return await context.SaveChangesAsync();
+            await context.SaveChangesAsync();
         }
 
         //public void Dispose()
