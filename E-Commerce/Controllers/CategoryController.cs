@@ -1,11 +1,13 @@
-﻿using E_Commerce.Repos.Interface;
+﻿using E_Commerce.DB.DTO;
+using E_Commerce.Repos.Interface;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace E_Commerce.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
+    //[ApiController]
     public class CategoryController : ControllerBase
     {
         private readonly IUnitOfWork unitOfWork;
@@ -14,13 +16,22 @@ namespace E_Commerce.Controllers
         {
             this.unitOfWork = unitOfWork;
         }
-        [HttpGet("/Hassan")]
-        public IActionResult Index()
+        [HttpPost("/Hassan")]
+        public IActionResult Index([FromBody] DTOReviews dTOReviews)
         {
+            if (ModelState.IsValid) { 
+               return Ok(dTOReviews);
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
+                var Categories = unitOfWork.CategoryRepo.GetAll();
 
-            //var Categories = unitOfWork.CategoryRepo.GetAll();
-
-            return Ok(new { x = "Hello World" });
+            return Ok( Categories );
         }
+        
+        
+    
     }
 }
