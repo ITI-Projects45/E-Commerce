@@ -9,6 +9,6 @@ namespace E_Commerce.DB.Models
 {
     public class ApplicationUser:IdentityUser
     {
-        public string imageurl { get; set; }
+        public string? imageurl { get; set; }
     }
 }

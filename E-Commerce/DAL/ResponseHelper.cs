@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace E_Commerce
 {
-    public class ResponseHelper
+    public class ResponseHelper 
     {
         public bool status { get; set; } = false;
         public string Massage { get; set; }
@@ -38,6 +39,7 @@ namespace E_Commerce
             Data = viewModel;
             return this;
         }
+        
         public ResponseHelper WithStatusCode(int code)
         {
             StatusCode = code;
@@ -57,7 +59,21 @@ namespace E_Commerce
             return this;
 
         }
-        
+
+        public ResponseHelper WithIdentityErrors(IEnumerable<IdentityError> errors)
+        {
+            Validation = new Dictionary<string, string>();
+            foreach (var error in errors)
+            {
+                Validation[error.Code] = error.Description;
+            }
+            status = false;
+            StatusCode = 400;
+            Massage = Massage ?? "Validation failed";
+            return this;
+        }
+
+
         public ResponseHelper Success(object data = null)
         {
             status = true;
@@ -67,9 +83,6 @@ namespace E_Commerce
             Validation = null;
             return this;
         }
-
-
-
 
         public ResponseHelper Created(object data = null)
         {
