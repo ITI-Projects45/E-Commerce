@@ -1,4 +1,5 @@
-﻿using E_Commerce.DB.DTO.UsersDTO;
+﻿using System.Security.Claims;
+using E_Commerce.DB.DTO.UsersDTO;
 using E_Commerce.DB.Models;
 using E_Commerce.Repos.Interface;
 using Microsoft.AspNetCore.Authorization;
@@ -11,8 +12,9 @@ using Microsoft.EntityFrameworkCore;
 namespace E_Commerce.Controllers
 {
     [Route("api/[controller]")]
-    //[ApiController]
-    
+    [ApiController]
+    [Authorize(Roles = "admin")]
+
     public class RoleController : ControllerBase
     {
         private readonly RoleManager<IdentityRole> userRole;
@@ -27,8 +29,10 @@ namespace E_Commerce.Controllers
 
 
         [HttpPost("create")]
+        
         public async Task<IActionResult> CreateRole([FromBody]RolsDTO role)
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             ResponseHelper responseHelper = new ResponseHelper();
             IdentityRole identityRole = new IdentityRole()
             {

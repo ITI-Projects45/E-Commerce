@@ -1,5 +1,6 @@
 ﻿
 using System.Text;
+using Azure.Core;
 using E_Commerce.DAL;
 using E_Commerce.DB;
 using E_Commerce.DB.Models;
@@ -13,6 +14,7 @@ using Microsoft.OpenApi.Models;
 
 namespace E_Commerce
 {
+    // this is main
     public class Program
     {
         public static void Main(string[] args)
@@ -20,7 +22,6 @@ namespace E_Commerce
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
             //builder.Services.AddControllers();
             builder.Services.AddControllers().ConfigureApiBehaviorOptions(options =>
             {
@@ -94,13 +95,15 @@ namespace E_Commerce
                 // To Enable authorization using Swagger (JWT)    
                 swagger.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
                 {
+                    
                     Name = "Authorization",
-                    Type = SecuritySchemeType.ApiKey,
+                    Type = SecuritySchemeType.Http,
                     Scheme = "Bearer",
                     BearerFormat = "JWT",
                     In = ParameterLocation.Header,
                     Description = "Enter 'Bearer' [space] and then your valid token in the text input below.\r\n\r\nExample: \"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\"",
                 });
+
                 swagger.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     {
@@ -114,20 +117,12 @@ namespace E_Commerce
                     },
                     new string[] {}
                     }
-                    });
-
-
-
-
+                });
+            
             });
 
 
             #endregion
-
-
-
-
-
 
 
             var app = builder.Build();
@@ -139,12 +134,11 @@ namespace E_Commerce
                 app.UseSwaggerUI();
             }
 
-            app.UseStaticFiles(); //read image  --->
+            app.UseStaticFiles(); //read image  
 
             app.UseCors("MyPolicy");
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 

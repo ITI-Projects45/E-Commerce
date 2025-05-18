@@ -94,6 +94,15 @@ namespace E_Commerce
             return this;
         }
 
+        public ResponseHelper Updated(object data = null)
+        {
+            status = true;
+            StatusCode = 200;
+            Massage = "Resource updated successfully";
+            Data = data;
+            Validation = null;
+            return this;
+        }
         public ResponseHelper NotFound(string message = "Resource not found")
         {
             status = false;
@@ -144,8 +153,15 @@ namespace E_Commerce
             return this;
         }
 
-        
+        public static IDictionary<string, string> ModelStateToValidation(ModelStateDictionary modelState)
+        {
+            return modelState.ToDictionary(
+                kvp => kvp.Key,
+                kvp => kvp.Value.Errors.FirstOrDefault()?.ErrorMessage ?? "Invalid value"
+            );
+        }
 
-       
+
+
     }
 }

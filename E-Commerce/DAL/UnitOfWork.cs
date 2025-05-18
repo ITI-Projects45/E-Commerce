@@ -67,8 +67,6 @@ namespace E_Commerce.DAL
             }
         }
 
-
-
         public IImageRepository ImageRepo
         {
             get
@@ -170,7 +168,7 @@ namespace E_Commerce.DAL
             }
         }
 
-        public async void SaveChangesAsync()
+        public async Task SaveChangesAsync()
         {
             await context.SaveChangesAsync();
         }
@@ -184,5 +182,6 @@ namespace E_Commerce.DAL
         {
             throw new NotImplementedException();
         }
+
     }
 }

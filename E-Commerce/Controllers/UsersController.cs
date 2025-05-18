@@ -3,6 +3,7 @@ using System.Diagnostics.Contracts;
 using E_Commerce.DB.DTO.UsersDTO;
 using E_Commerce.DB.Models;
 using E_Commerce.Repos.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +12,9 @@ using Microsoft.EntityFrameworkCore;
 namespace E_Commerce.Controllers
 {
     [Route("api/[controller]")]
-    //[ApiController]
+    [ApiController]
+    [Authorize(Roles = "admin")]
+
     public class UsersController : ControllerBase
     {
         private readonly IUnitOfWork unitOfWork;
