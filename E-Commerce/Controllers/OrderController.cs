@@ -1,12 +1,7 @@
-﻿using System.Runtime.CompilerServices;
-using E_Commerce.Models;
+﻿using E_Commerce.Models;
 using E_Commerce.Repos.Interface;
-using E_Commerce.Repos.DTOs;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Http.HttpResults;
-using E_Commerce.DAL;
 using E_Commerce.DB.DTO;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 
 namespace E_Commerce.Controllers
@@ -14,10 +9,8 @@ namespace E_Commerce.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(Roles = "admin")]
-
     public class OrderController : ControllerBase
     {
-
         private readonly IUnitOfWork unitOfWork;
 
         public OrderController(IUnitOfWork unitOfWork)
@@ -28,71 +21,108 @@ namespace E_Commerce.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var orders = unitOfWork.OrderRepo
-                            .GetAll()
-                            .Where(o => !o.IsDeleted)
-                            .ToList();
+            try
+            {
+                var orders = unitOfWork.OrderRepo
+                    .GetAll()
+                    .Where(o => !o.IsDeleted)
+                    .ToList();
 
-            return Ok(orders);
+                return Ok(new ResponseHelper().Success(orders));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ResponseHelper().BadRequest($"An error occurred: {ex.Message}"));
+            }
         }
 
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            var order = unitOfWork.OrderRepo.GetById(id);
-            if (order == null || order.IsDeleted)
-                return NotFound();
+            try
+            {
+                var order = unitOfWork.OrderRepo.GetById(id);
+                if (order == null || order.IsDeleted)
+                    return NotFound(new ResponseHelper().NotFound($"Order with ID {id} not found"));
 
-            return Ok(order);
+                return Ok(new ResponseHelper().Success(order));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ResponseHelper().BadRequest($"An error occurred: {ex.Message}"));
+            }
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Order order)
+        public async Task<IActionResult> Create([FromBody] Order order)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(new ResponseHelper().WithValidation(ModelState).BadRequest("Invalid order data"));
 
-            order.OrderDate = DateTime.Now;
+                order.OrderDate = DateTime.Now;
+                unitOfWork.OrderRepo.Create(order);
+                await unitOfWork.SaveChangesAsync();
 
-            unitOfWork.OrderRepo.Create(order);
-            unitOfWork.SaveChangesAsync();
-
-            return NoContent();
+                return Ok(new ResponseHelper().Created(order));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ResponseHelper().BadRequest($"An error occurred: {ex.Message}"));
+            }
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, Order updatedOrder)
+        public async Task<IActionResult> Update(int id, [FromBody] Order updatedOrder)
         {
-            if (id != updatedOrder.Id)
-                return BadRequest("Please Your Order Not Found");
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(new ResponseHelper().WithValidation(ModelState).BadRequest("Invalid order data"));
 
-            var OldOrder = unitOfWork.OrderRepo.GetById(id);
-            if (OldOrder == null || OldOrder.IsDeleted)
-                return NotFound();
+                if (id != updatedOrder.Id)
+                    return BadRequest(new ResponseHelper().BadRequest("Order ID mismatch"));
 
-            OldOrder.total = updatedOrder.total;
-            OldOrder.Status = updatedOrder.Status;
-            OldOrder.AddresId = updatedOrder.AddresId;
-            OldOrder.Payment = updatedOrder.Payment;
+                var existingOrder = unitOfWork.OrderRepo.GetById(id);
+                if (existingOrder == null || existingOrder.IsDeleted)
+                    return NotFound(new ResponseHelper().NotFound($"Order with ID {id} not found"));
 
-            unitOfWork.OrderRepo.Update(OldOrder);
-            unitOfWork.SaveChangesAsync();
+                existingOrder.total = updatedOrder.total;
+                existingOrder.Status = updatedOrder.Status;
+                existingOrder.AddresId = updatedOrder.AddresId;
+                existingOrder.Payment = updatedOrder.Payment;
 
-            return NoContent();
+                unitOfWork.OrderRepo.Update(existingOrder);
+                await unitOfWork.SaveChangesAsync();
+
+                return Ok(new ResponseHelper().Updated(existingOrder));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ResponseHelper().BadRequest($"An error occurred: {ex.Message}"));
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var order = unitOfWork.OrderRepo.GetById(id);
-            if (order == null || order.IsDeleted)
-                return NotFound();
+            try
+            {
+                var order = unitOfWork.OrderRepo.GetById(id);
+                if (order == null || order.IsDeleted)
+                    return NotFound(new ResponseHelper().NotFound($"Order with ID {id} not found"));
 
-            order.IsDeleted = true;
-            unitOfWork.OrderRepo.Update(order);
-            unitOfWork.SaveChangesAsync();
+                order.IsDeleted = true;
+                unitOfWork.OrderRepo.Update(order);
+                await unitOfWork.SaveChangesAsync();
 
-            return NoContent();
+                return Ok(new ResponseHelper().Success("Order deleted successfully"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ResponseHelper().BadRequest($"An error occurred: {ex.Message}"));
+            }
         }
     }
 }

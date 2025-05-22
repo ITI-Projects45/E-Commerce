@@ -1,10 +1,9 @@
-﻿using System.Security.Claims;
+﻿using System;
+using System.Collections.Generic;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using E_Commerce.DB.DTO.UsersDTO;
-using E_Commerce.DB.Models;
-using E_Commerce.Repos.Interface;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,52 +13,68 @@ namespace E_Commerce.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(Roles = "admin")]
-
     public class RoleController : ControllerBase
     {
-        private readonly RoleManager<IdentityRole> userRole;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-
-
-        public RoleController(
-            RoleManager<IdentityRole> userRole)
+        public RoleController(RoleManager<IdentityRole> roleManager)
         {
-            this.userRole = userRole;
+            _roleManager = roleManager;
         }
 
-
         [HttpPost("create")]
-        
-        public async Task<IActionResult> CreateRole([FromBody]RolsDTO role)
+        public async Task<IActionResult> CreateRole([FromBody] RolsDTO role)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            ResponseHelper responseHelper = new ResponseHelper();
-            IdentityRole identityRole = new IdentityRole()
+            var responseHelper = new ResponseHelper();
+
+            try
             {
-                Name = role.RoleName
-            };
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(responseHelper.WithValidation(ModelState));
+                }
 
-            IdentityRole isExist = await userRole.FindByNameAsync(identityRole.Name);
+                if (string.IsNullOrWhiteSpace(role.RoleName))
+                {
+                    return BadRequest(responseHelper.BadRequest("Role name is required."));
+                }
 
-            if (isExist != null) {
-                return BadRequest(responseHelper.BadRequest("Role Already Esist"));
+                var existingRole = await _roleManager.FindByNameAsync(role.RoleName);
+                if (existingRole != null)
+                {
+                    return BadRequest(responseHelper.BadRequest("Role already exists."));
+                }
+
+                var newRole = new IdentityRole { Name = role.RoleName };
+                var result = await _roleManager.CreateAsync(newRole);
+
+                if (!result.Succeeded)
+                {
+                    return BadRequest(responseHelper.WithIdentityErrors(result.Errors));
+                }
+
+                return Ok(responseHelper.Created(newRole));
             }
-
-            await userRole.CreateAsync(identityRole);
-
-
-            return Ok(responseHelper.Created(identityRole));
+            catch (Exception ex)
+            {
+                return StatusCode(500, responseHelper.ServerError(ex.Message));
+            }
         }
 
         [HttpGet]
-        public async Task<IActionResult> getAll()
+        public async Task<IActionResult> GetAll()
         {
-            ResponseHelper responseHelper = new ResponseHelper();
-            List<IdentityRole> rolesList = await userRole.Roles.ToListAsync();
-            return Ok(responseHelper.Success(rolesList));
+            var responseHelper = new ResponseHelper();
+
+            try
+            {
+                var roles = await _roleManager.Roles.ToListAsync();
+                return Ok(responseHelper.Success(roles));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, responseHelper.ServerError(ex.Message));
+            }
         }
-
-
-
     }
 }

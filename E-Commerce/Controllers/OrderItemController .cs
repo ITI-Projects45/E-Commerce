@@ -1,18 +1,15 @@
-﻿using System.Runtime.CompilerServices;
-using E_Commerce.Models;
+﻿using E_Commerce.Models;
 using E_Commerce.Repos.Interface;
 using E_Commerce.Repos.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Http.HttpResults;
-using E_Commerce.DAL;
 using Microsoft.AspNetCore.Authorization;
+using E_Commerce.DB.DTO;
+
 namespace E_Commerce.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     [Authorize(Roles = "admin")]
-
     public class OrderItemController : ControllerBase
     {
         private readonly IUnitOfWork unitOfWork;
@@ -25,71 +22,108 @@ namespace E_Commerce.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var items = unitOfWork.OrderItemRepo.GetAll().Select(oi => new OrderItemDTO
+            try
             {
-                Id = oi.Id,
-                ProductId = oi.ProductId,
-                OrderId = oi.OrderId,
-                Quantity = oi.Quantity,
-                PriceAtPurchase = oi.PriceAtPurchase
-            }).ToList();
+                var items = unitOfWork.OrderItemRepo.GetAll().Select(oi => new OrderItemDTO
+                {
+                    Id = oi.Id,
+                    ProductId = oi.ProductId,
+                    OrderId = oi.OrderId,
+                    Quantity = oi.Quantity,
+                    PriceAtPurchase = oi.PriceAtPurchase
+                }).ToList();
 
-            return Ok(items);
+                return Ok(new ResponseHelper().Success(items));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ResponseHelper().BadRequest($"An error occurred: {ex.Message}"));
+            }
         }
 
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            var item = unitOfWork.OrderItemRepo.GetById(id);
-            if (item == null) return NotFound();
-
-            var dto = new OrderItemDTO
+            try
             {
-                Id = item.Id,
-                ProductId = item.ProductId,
-                OrderId = item.OrderId,
-                Quantity = item.Quantity,
-                PriceAtPurchase = item.PriceAtPurchase
-            };
+                var item = unitOfWork.OrderItemRepo.GetById(id);
+                if (item == null)
+                    return NotFound(new ResponseHelper().NotFound($"Order item with ID {id} not found"));
 
-            return Ok(dto);
+                var dto = new OrderItemDTO
+                {
+                    Id = item.Id,
+                    ProductId = item.ProductId,
+                    OrderId = item.OrderId,
+                    Quantity = item.Quantity,
+                    PriceAtPurchase = item.PriceAtPurchase
+                };
+
+                return Ok(new ResponseHelper().Success(dto));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ResponseHelper().BadRequest($"An error occurred: {ex.Message}"));
+            }
         }
 
         [HttpPost]
-        public IActionResult Create(OrderItemDTO dto)
+        public async Task<IActionResult> Create(OrderItemDTO dto)
         {
-            var item = new OrderItem
+            try
             {
-                ProductId = dto.ProductId,
-                OrderId = dto.OrderId,
-                Quantity = dto.Quantity,
-                PriceAtPurchase = dto.PriceAtPurchase
-            };
+                if (!ModelState.IsValid)
+                    return BadRequest(new ResponseHelper().WithValidation(ModelState).BadRequest("Invalid order item data"));
 
-            unitOfWork.OrderItemRepo.Create(item);
-            unitOfWork.SaveChangesAsync();
+                var item = new OrderItem
+                {
+                    ProductId = dto.ProductId,
+                    OrderId = dto.OrderId,
+                    Quantity = dto.Quantity,
+                    PriceAtPurchase = dto.PriceAtPurchase
+                };
 
-            dto.Id = item.Id;
-            return CreatedAtAction(nameof(GetById), new { id = item.Id }, dto);
+                unitOfWork.OrderItemRepo.Create(item);
+                await unitOfWork.SaveChangesAsync();
+
+                dto.Id = item.Id;
+                return CreatedAtAction(nameof(GetById), new { id = dto.Id }, new ResponseHelper().Created(dto));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ResponseHelper().BadRequest($"An error occurred: {ex.Message}"));
+            }
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, OrderItemDTO dto)
+        public async Task<IActionResult> Update(int id, OrderItemDTO dto)
         {
-            if (id != dto.Id) return BadRequest();
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(new ResponseHelper().WithValidation(ModelState).BadRequest("Invalid order item data"));
 
-            var item = unitOfWork.OrderItemRepo.GetById(id);
-            if (item == null) return NotFound();
+                if (id != dto.Id)
+                    return BadRequest(new ResponseHelper().BadRequest("ID mismatch between URL and body"));
 
-            item.ProductId = dto.ProductId;
-            item.OrderId = dto.OrderId;
-            item.Quantity = dto.Quantity;
-            item.PriceAtPurchase = dto.PriceAtPurchase;
+                var item = unitOfWork.OrderItemRepo.GetById(id);
+                if (item == null)
+                    return NotFound(new ResponseHelper().NotFound($"Order item with ID {id} not found"));
 
-            unitOfWork.OrderItemRepo.Update(item);
-            unitOfWork.SaveChangesAsync();
+                item.ProductId = dto.ProductId;
+                item.OrderId = dto.OrderId;
+                item.Quantity = dto.Quantity;
+                item.PriceAtPurchase = dto.PriceAtPurchase;
 
-            return NoContent();
+                unitOfWork.OrderItemRepo.Update(item);
+                await unitOfWork.SaveChangesAsync();
+
+                return Ok(new ResponseHelper().Updated(dto));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ResponseHelper().BadRequest($"An error occurred: {ex.Message}"));
+            }
         }
     }
 }

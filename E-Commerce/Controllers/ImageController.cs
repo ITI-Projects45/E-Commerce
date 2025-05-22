@@ -1,20 +1,16 @@
-﻿using System.Runtime.CompilerServices;
-using E_Commerce.Models;
+﻿using E_Commerce.Models;
 using E_Commerce.Repos.Interface;
-using E_Commerce.Repos.DTOs;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Http.HttpResults;
-using E_Commerce.DAL;
 using E_Commerce.DB.DTO;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace E_Commerce.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     [Authorize(Roles = "admin")]
-
     public class ImageController : ControllerBase
     {
         private readonly IUnitOfWork unitOfWork;
@@ -27,81 +23,137 @@ namespace E_Commerce.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var images = unitOfWork.ImageRepo
-                                   .GetAll()
-                                   .Where(img => !img.IsDeleted)
-                                   .Select(img => new ImageDTO
-                                   {
-                                       Id = img.Id,
-                                       URL = img.URL,
-                                       AltText = img.AltText
-                                   })
-                                   .ToList();
+            try
+            {
+                var images = unitOfWork.ImageRepo
+                                       .GetAll()
+                                       .Where(img => !img.IsDeleted)
+                                       .Select(img => new ImageDTO
+                                       {
+                                           Id = img.Id,
+                                           URL = img.URL,
+                                           AltText = img.AltText
+                                       })
+                                       .ToList();
 
-            return Ok(images);
+                return Ok(new ResponseHelper().Success(images));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ResponseHelper().ServerError($"An error occurred: {ex.Message}"));
+            }
         }
 
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            var image = unitOfWork.ImageRepo.GetById(id);
-            if (image == null || image.IsDeleted)
-                return NotFound();
-
-            var imageDTO = new ImageDTO
+            try
             {
-                Id = image.Id,
-                URL = image.URL,
-                AltText = image.AltText
-            };
+                var image = unitOfWork.ImageRepo.GetById(id);
+                if (image == null || image.IsDeleted)
+                    return NotFound(new ResponseHelper().NotFound($"Image with ID {id} not found"));
 
-            return Ok(imageDTO);
+                var imageDTO = new ImageDTO
+                {
+                    Id = image.Id,
+                    URL = image.URL,
+                    AltText = image.AltText
+                };
+
+                return Ok(new ResponseHelper().Success(imageDTO));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ResponseHelper().ServerError($"An error occurred: {ex.Message}"));
+            }
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Image image)
+        public async Task<IActionResult> Create([FromBody] Image image)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(new ResponseHelper()
+                        .WithValidation(ModelState)
+                        .BadRequest("Invalid image data"));
 
-            unitOfWork.ImageRepo.Create(image);
-            unitOfWork.SaveChangesAsync();
+                unitOfWork.ImageRepo.Create(image);
+                await unitOfWork.SaveChangesAsync();
 
-            return NoContent();
+                var imageDTO = new ImageDTO
+                {
+                    Id = image.Id,
+                    URL = image.URL,
+                    AltText = image.AltText
+                };
+
+                return Ok(new ResponseHelper().Created(imageDTO));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ResponseHelper().ServerError($"An error occurred: {ex.Message}"));
+            }
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, Image updatedImage)
+        public async Task<IActionResult> Update(int id, [FromBody] Image updatedImage)
         {
-            if (id != updatedImage.Id)
-                return BadRequest("Mismatched ID");
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(new ResponseHelper()
+                        .WithValidation(ModelState)
+                        .BadRequest("Invalid update data"));
 
-            var oldImage = unitOfWork.ImageRepo.GetById(id);
-            if (oldImage == null || oldImage.IsDeleted)
-                return NotFound();
+                if (id != updatedImage.Id)
+                    return BadRequest(new ResponseHelper().BadRequest("Mismatched ID"));
 
-            oldImage.URL = updatedImage.URL;
-            oldImage.AltText = updatedImage.AltText;
-            oldImage.Product = updatedImage.Product;
+                var oldImage = unitOfWork.ImageRepo.GetById(id);
+                if (oldImage == null || oldImage.IsDeleted)
+                    return NotFound(new ResponseHelper().NotFound($"Image with ID {id} not found"));
 
-            unitOfWork.ImageRepo.Update(oldImage);
-            unitOfWork.SaveChangesAsync();
+                oldImage.URL = updatedImage.URL;
+                oldImage.AltText = updatedImage.AltText;
+                oldImage.Product = updatedImage.Product;
 
-            return NoContent();
+                unitOfWork.ImageRepo.Update(oldImage);
+                await unitOfWork.SaveChangesAsync();
+
+                var dto = new ImageDTO
+                {
+                    Id = oldImage.Id,
+                    URL = oldImage.URL,
+                    AltText = oldImage.AltText
+                };
+
+                return Ok(new ResponseHelper().Updated(dto));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ResponseHelper().ServerError($"An error occurred: {ex.Message}"));
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var image = unitOfWork.ImageRepo.GetById(id);
-            if (image == null || image.IsDeleted)
-                return NotFound();
+            try
+            {
+                var image = unitOfWork.ImageRepo.GetById(id);
+                if (image == null || image.IsDeleted)
+                    return NotFound(new ResponseHelper().NotFound($"Image with ID {id} not found"));
 
-            image.IsDeleted = true;
-            unitOfWork.ImageRepo.Update(image);
-            unitOfWork.SaveChangesAsync();
+                image.IsDeleted = true;
+                unitOfWork.ImageRepo.Update(image);
+                await unitOfWork.SaveChangesAsync();
 
-            return NoContent();
+                return Ok(new ResponseHelper().Success("Image deleted successfully"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ResponseHelper().ServerError($"An error occurred: {ex.Message}"));
+            }
         }
     }
 }

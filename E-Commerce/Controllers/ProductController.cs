@@ -1,126 +1,169 @@
-﻿using System.Runtime.CompilerServices;
-using E_Commerce.Models;
+﻿using E_Commerce.Models;
 using E_Commerce.Repos.Interface;
 using E_Commerce.Repos.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Http.HttpResults;
-using E_Commerce.DAL;
 using Microsoft.AspNetCore.Authorization;
+using E_Commerce.DB.DTO;
 
 namespace E_Commerce.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     [Authorize(Roles = "admin")]
-
-    public class ProductController : Controller
+    public class ProductController : ControllerBase
     {
         private readonly IUnitOfWork unitOfWork;
+
         public ProductController(IUnitOfWork unitOfWork)
         {
             this.unitOfWork = unitOfWork;
         }
+
         [HttpGet]
         public IActionResult GetAll()
         {
-            List<ProductDTO> products = unitOfWork.ProductRepo.GetAll().Select(p => new ProductDTO
+            try
             {
-                Id = p.Id,
-                Name = p.Name,
-                Brand = p.Brand,
-                Description = p.Description,
-                Price = p.Price,
-                Stock = p.Stock,
-                Category = p.Category.Name,
-            }).ToList();
-            return Ok(products);
+                var products = unitOfWork.ProductRepo.GetAll()
+                    .Where(p => !p.IsDeleted)
+                    .Select(p => new ProductDTO
+                    {
+                        Id = p.Id,
+                        Name = p.Name,
+                        Brand = p.Brand,
+                        Description = p.Description,
+                        Price = p.Price,
+                        Stock = p.Stock,
+                        Category = p.Category.Name,
+                    }).ToList();
 
+                return Ok(new ResponseHelper().Success(products));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ResponseHelper().BadRequest($"Error fetching products: {ex.Message}"));
+            }
         }
+
         [HttpGet("{id}")]
-        public IActionResult GetById(int id) {
-            var product = unitOfWork.ProductRepo.GetById(id);
-            if (product == null) {
-                return NotFound();
-            }
-            ProductDTO productDTO = new ProductDTO
+        public IActionResult GetById(int id)
+        {
+            try
             {
-                Id = product.Id,
-                Brand = product.Brand,
-                Category=product.Category.Name,
-                Description=product.Description,
-                Name=product.Name,
-                Price=product.Price,
-                Stock=product.Stock
-            };
-            return Ok(productDTO);
-        
+                var product = unitOfWork.ProductRepo.GetById(id);
+                if (product == null || product.IsDeleted)
+                    return NotFound(new ResponseHelper().NotFound($"Product with ID {id} not found"));
+
+                var productDTO = new ProductDTO
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    Brand = product.Brand,
+                    Description = product.Description,
+                    Price = product.Price,
+                    Stock = product.Stock,
+                    Category = product.Category.Name,
+                };
+
+                return Ok(new ResponseHelper().Success(productDTO));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ResponseHelper().BadRequest($"Error fetching product: {ex.Message}"));
+            }
         }
+
         [HttpPost]
-        public IActionResult Create(ProductDTO dto)
+        public async Task<IActionResult> Create(ProductDTO dto)
         {
-            var category = unitOfWork.CategoryRepo.GetAll().FirstOrDefault(c => c.Name == dto.Category);
-            if (category == null)
+            try
             {
-                return BadRequest("Invalid category.");
+                if (!ModelState.IsValid)
+                    return BadRequest(new ResponseHelper().WithValidation(ModelState).BadRequest("Invalid product data"));
+
+                var category = unitOfWork.CategoryRepo.GetAll().FirstOrDefault(c => c.Name == dto.Category);
+                if (category == null)
+                    return BadRequest(new ResponseHelper().BadRequest("Invalid category"));
+
+                var product = new Product
+                {
+                    Name = dto.Name,
+                    Brand = dto.Brand,
+                    Description = dto.Description,
+                    Price = dto.Price,
+                    Stock = dto.Stock,
+                    Category = category
+                };
+
+                unitOfWork.ProductRepo.Create(product);
+                await unitOfWork.SaveChangesAsync();
+
+                dto.Id = product.Id;
+
+                return CreatedAtAction(nameof(GetById), new { id = product.Id }, new ResponseHelper().Created(dto));
             }
-
-            var p = new Product
+            catch (Exception ex)
             {
-                Brand = dto.Brand,
-                Description = dto.Description,
-                Name = dto.Name,
-                Price = dto.Price,
-                Stock = dto.Stock,
-                Category = category,
-            };
-
-            unitOfWork.ProductRepo.Create(p);
-            unitOfWork.SaveChangesAsync();
-
-            dto.Id = p.Id;
-            return CreatedAtAction(nameof(GetById), new { id = p.Id }, dto);
+                return StatusCode(500, new ResponseHelper().BadRequest($"Error creating product: {ex.Message}"));
+            }
         }
+
         [HttpPut("{id}")]
-        public IActionResult Update(int id, ProductDTO dto)
+        public async Task<IActionResult> Update(int id, ProductDTO dto)
         {
-            if (id != dto.Id) return BadRequest();
-
-            var p = unitOfWork.ProductRepo.GetById(id);
-            if (p == null) return NotFound();
-
-            var category = unitOfWork.CategoryRepo.GetAll().FirstOrDefault(c => c.Name == dto.Category);
-            if (category == null)
+            try
             {
-                return BadRequest("Invalid category.");
+                if (!ModelState.IsValid)
+                    return BadRequest(new ResponseHelper().WithValidation(ModelState).BadRequest("Invalid product data"));
+
+                if (id != dto.Id)
+                    return BadRequest(new ResponseHelper().BadRequest("Product ID mismatch"));
+
+                var product = unitOfWork.ProductRepo.GetById(id);
+                if (product == null || product.IsDeleted)
+                    return NotFound(new ResponseHelper().NotFound($"Product with ID {id} not found"));
+
+                var category = unitOfWork.CategoryRepo.GetAll().FirstOrDefault(c => c.Name == dto.Category);
+                if (category == null)
+                    return BadRequest(new ResponseHelper().BadRequest("Invalid category"));
+
+                product.Name = dto.Name;
+                product.Brand = dto.Brand;
+                product.Description = dto.Description;
+                product.Price = dto.Price;
+                product.Stock = dto.Stock;
+                product.Category = category;
+
+                unitOfWork.ProductRepo.Update(product);
+                await unitOfWork.SaveChangesAsync();
+
+                return Ok(new ResponseHelper().Updated(dto));
             }
-
-            p.Name = dto.Name;
-            p.Description = dto.Description;
-            p.Price = dto.Price;
-            p.Stock = dto.Stock;
-            p.Brand = dto.Brand;
-            p.Category = category;
-
-            unitOfWork.ProductRepo.Update(p);
-            unitOfWork.SaveChangesAsync();
-
-            return NoContent();
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ResponseHelper().BadRequest($"Error updating product: {ex.Message}"));
+            }
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var p = unitOfWork.ProductRepo.GetById(id);
-            if (p == null) return NotFound();
-            p.IsDeleted = true;
+            try
+            {
+                var product = unitOfWork.ProductRepo.GetById(id);
+                if (product == null || product.IsDeleted)
+                    return NotFound(new ResponseHelper().NotFound($"Product with ID {id} not found"));
 
-            unitOfWork.ProductRepo.Update(p);
-            unitOfWork.SaveChangesAsync();
-            return NoContent();
+                product.IsDeleted = true;
+                unitOfWork.ProductRepo.Update(product);
+                await unitOfWork.SaveChangesAsync();
+
+                return Ok(new ResponseHelper().Success($"Product with ID {id} has been deleted"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ResponseHelper().BadRequest($"Error deleting product: {ex.Message}"));
+            }
         }
-
-
-
     }
 }

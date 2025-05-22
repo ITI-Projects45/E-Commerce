@@ -1,117 +1,164 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using E_Commerce.DB.DTO;
 using E_Commerce.Models;
 using E_Commerce.Repos.Interface;
-using E_Commerce.Repos.DTOs;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Http.HttpResults;
-using E_Commerce.DAL;
-using E_Commerce.DB.DTO;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace E_Commerce.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(Roles = "admin")]
-
-
     public class VideoController : Controller
     {
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
 
         public VideoController(IUnitOfWork unitOfWork)
         {
-            this.unitOfWork = unitOfWork;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpGet]
         public IActionResult GetAll()
         {
-            var videos = unitOfWork.VideoRepo
-                                   .GetAll()
-                                   .Where(v => !v.IsDeleted)
-                                   .Select(v => new VideoDTO
-                                   {
-                                       Id = v.Id,
-                                       URL = v.URL,
-                                       AltText = v.AltText,
-                                       ProductId = v.Product.Id
-                                   })
-                                   .ToList();
+            var response = new ResponseHelper();
+            try
+            {
+                var videos = _unitOfWork.VideoRepo
+                    .GetAll()
+                    .Where(v => !v.IsDeleted)
+                    .Select(v => new VideoDTO
+                    {
+                        Id = v.Id,
+                        URL = v.URL,
+                        AltText = v.AltText,
+                        ProductId = v.Product.Id
+                    })
+                    .ToList();
 
-            return Ok(videos);
+                return Ok(response.Success(videos));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, response.ServerError(ex.Message));
+            }
         }
 
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            var video = unitOfWork.VideoRepo.GetById(id);
-            if (video == null || video.IsDeleted)
-                return NotFound();
-
-            var videoDTO = new VideoDTO
+            var response = new ResponseHelper();
+            try
             {
-                Id = video.Id,
-                URL = video.URL,
-                AltText = video.AltText,
-                ProductId = video.Product.Id
-            };
+                var video = _unitOfWork.VideoRepo.GetById(id);
+                if (video == null || video.IsDeleted)
+                    return NotFound(response.NotFound("Video not found"));
 
-            return Ok(videoDTO);
+                var videoDTO = new VideoDTO
+                {
+                    Id = video.Id,
+                    URL = video.URL,
+                    AltText = video.AltText,
+                    ProductId = video.Product.Id
+                };
+
+                return Ok(response.Success(videoDTO));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, response.ServerError(ex.Message));
+            }
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(VideoDTO videoDTO)
+        public async Task<IActionResult> Create([FromBody] VideoDTO videoDTO)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var video = new Video
+            var response = new ResponseHelper();
+            try
             {
-                URL = videoDTO.URL,
-                AltText = videoDTO.AltText,
-                Product = unitOfWork.ProductRepo.GetById(videoDTO.ProductId)
-            };
+                if (!ModelState.IsValid)
+                    return BadRequest(response.WithValidation(ModelState));
 
-            unitOfWork.VideoRepo.Create(video);
-            unitOfWork.SaveChangesAsync();
+                var product = _unitOfWork.ProductRepo.GetById(videoDTO.ProductId);
+                if (product == null)
+                    return NotFound(response.NotFound("Associated product not found"));
 
-            return NoContent();
+                var video = new Video
+                {
+                    URL = videoDTO.URL,
+                    AltText = videoDTO.AltText,
+                    Product = product
+                };
+
+                _unitOfWork.VideoRepo.Create(video);
+                await _unitOfWork.SaveChangesAsync();
+
+                return Ok(response.Created(video));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, response.ServerError(ex.Message));
+            }
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, VideoDTO updatedVideoDTO)
+        public async Task<IActionResult> Update(int id, [FromBody] VideoDTO updatedVideoDTO)
         {
-            if (id != updatedVideoDTO.Id)
-                return BadRequest("Mismatched ID");
+            var response = new ResponseHelper();
+            try
+            {
+                if (id != updatedVideoDTO.Id)
+                    return BadRequest(response.BadRequest("Mismatched video ID"));
 
-            var oldVideo = unitOfWork.VideoRepo.GetById(id);
-            if (oldVideo == null || oldVideo.IsDeleted)
-                return NotFound();
+                if (!ModelState.IsValid)
+                    return BadRequest(response.WithValidation(ModelState));
 
-            oldVideo.URL = updatedVideoDTO.URL;
-            oldVideo.AltText = updatedVideoDTO.AltText;
-            oldVideo.Product = unitOfWork.ProductRepo.GetById(updatedVideoDTO.ProductId);
+                var existingVideo = _unitOfWork.VideoRepo.GetById(id);
+                if (existingVideo == null || existingVideo.IsDeleted)
+                    return NotFound(response.NotFound("Video not found"));
 
-            unitOfWork.VideoRepo.Update(oldVideo);
-            unitOfWork.SaveChangesAsync();
+                var product = _unitOfWork.ProductRepo.GetById(updatedVideoDTO.ProductId);
+                if (product == null)
+                    return NotFound(response.NotFound("Associated product not found"));
 
-            return NoContent();
+                existingVideo.URL = updatedVideoDTO.URL;
+                existingVideo.AltText = updatedVideoDTO.AltText;
+                existingVideo.Product = product;
+
+                _unitOfWork.VideoRepo.Update(existingVideo);
+                await _unitOfWork.SaveChangesAsync();
+
+                return Ok(response.Updated(existingVideo));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, response.ServerError(ex.Message));
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var video = unitOfWork.VideoRepo.GetById(id);
-            if (video == null || video.IsDeleted)
-                return NotFound();
+            var response = new ResponseHelper();
+            try
+            {
+                var video = _unitOfWork.VideoRepo.GetById(id);
+                if (video == null || video.IsDeleted)
+                    return NotFound(response.NotFound("Video not found"));
 
-            video.IsDeleted = true;
-            unitOfWork.VideoRepo.Update(video);
-            unitOfWork.SaveChangesAsync();
+                video.IsDeleted = true;
+                _unitOfWork.VideoRepo.Update(video);
+                await _unitOfWork.SaveChangesAsync();
 
-            return NoContent();
+                return Ok(response.WithStatus(true).WithMassage($"Video with ID {id} has been deleted"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, response.ServerError(ex.Message));
+            }
         }
     }
 }
