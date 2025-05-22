@@ -13,7 +13,7 @@ using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegiste
 namespace E_Commerce.Controllers
 {
     [Route("api/[controller]")]
-    //[ApiController]
+    [ApiController]
     public class AuthController : ControllerBase
     {
         private readonly IUnitOfWork unitOfWork;
@@ -37,6 +37,7 @@ namespace E_Commerce.Controllers
             this.signInManager = signInManager;
             this.config = config;
         }
+
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] AuthLogin userData)
@@ -63,25 +64,13 @@ namespace E_Commerce.Controllers
                 return BadRequest(responseHelper.Unauthorized("Invalid Credintional"));
             }
 
-            //var result = await signInManager.PasswordSignInAsync(login.UserName, userData.Password, false, false);
-
-            //if (!result.Succeeded)
-            //{
-            //    return BadRequest(responseHelper.BadRequest());
-            //}
-
-
-
-
-
             var obj = await GenerateToken(login);
             return Ok(responseHelper.Success().WithData(obj));
         }
 
 
         [HttpPost("register")]
-
-        public async Task<IActionResult> Register([FromBody]RegisterAuthDTO registerUser)
+        public async Task<IActionResult> Register([FromBody] RegisterAuthDTO registerUser)
         {
             ResponseHelper responseHelper = new ResponseHelper();
 
@@ -90,26 +79,44 @@ namespace E_Commerce.Controllers
                 return BadRequest(responseHelper.WithValidation(ModelState));
             }
 
-            ApplicationUser applicationUser = new ApplicationUser()
+            ApplicationUser applicationUser = await userManger.FindByEmailAsync(registerUser.Email);
+
+            if (applicationUser != null)
+            {
+                return BadRequest(responseHelper.BadRequest("User Already Register , Please Login "));
+            }
+
+
+
+            applicationUser = new ApplicationUser()
             {
                 UserName = registerUser.UserName,
                 Email = registerUser.Email,
 
             };
+
+
+
             IdentityResult res = await userManger.CreateAsync(applicationUser, registerUser.Password);
 
             if (!res.Succeeded)
             {
-                return BadRequest(res.Errors);
+                return BadRequest(responseHelper.BadRequest().WithIdentityErrors(res.Errors));
             }
 
             // create tojken 
             var obj = await GenerateToken(applicationUser);
 
-
             return Ok(responseHelper.Success().WithData(obj));
         }
 
+
+        [HttpGet("test")]
+        public IActionResult Test( object test)
+        {
+            Console.WriteLine(test);
+            return Ok(test);
+        }
 
         [NonAction]
         public async Task<object> GenerateToken(ApplicationUser applicationUser)
@@ -120,7 +127,7 @@ namespace E_Commerce.Controllers
             List<Claim> claim = new List<Claim>();
             claim.Add(new Claim(ClaimTypes.NameIdentifier, applicationUser.Id));
             claim.Add(new Claim(ClaimTypes.Name, applicationUser.UserName));
-            claim.Add(new Claim(JwtRegisteredClaimNames.Jti, jti));//optional
+            claim.Add(new Claim(JwtRegisteredClaimNames.Jti, jti));
 
             if (uerRole != null)
             {
@@ -131,7 +138,7 @@ namespace E_Commerce.Controllers
             }
 
             SymmetricSecurityKey signinKey =
-                           new(Encoding.UTF8.GetBytes(config["JWT:Key"]));//hjhjhjhjh
+                           new(Encoding.UTF8.GetBytes(config["JWT:Key"]));
 
             SigningCredentials signingCredentials =
                 new SigningCredentials(signinKey, SecurityAlgorithms.HmacSha256);
@@ -148,7 +155,7 @@ namespace E_Commerce.Controllers
             {
                 expired = DateTime.Now.AddHours(1),
                 token = new JwtSecurityTokenHandler().WriteToken(myToken)
-            }; ;
+            };
         }
 
 

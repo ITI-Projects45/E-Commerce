@@ -2,14 +2,17 @@
 using E_Commerce.DB.DTO;
 using E_Commerce.Models;
 using E_Commerce.Repos.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace E_Commerce.Controllers
 {
-    //[ApiController]
+    [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles = "admin")]
+
     public class ReviewController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
