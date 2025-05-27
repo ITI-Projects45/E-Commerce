@@ -9,7 +9,7 @@ namespace E_Commerce.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "admin")]
+  //  [Authorize(Roles = "admin")]
     public class ProductController : ControllerBase
     {
         private readonly IUnitOfWork unitOfWork;

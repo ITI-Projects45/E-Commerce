@@ -11,7 +11,7 @@ namespace E_Commerce.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "admin")]
+  //  [Authorize(Roles = "admin")]
     public class VideoController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
