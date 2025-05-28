@@ -9,7 +9,8 @@ namespace E_Commerce.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "admin")]
+    //[Authorize(Roles = "admin")]
+    [AllowAnonymous]
     public class ProductController : ControllerBase
     {
         private readonly IUnitOfWork unitOfWork;
@@ -84,7 +85,6 @@ namespace E_Commerce.Controllers
                 var category = unitOfWork.CategoryRepo.GetAll().FirstOrDefault(c => c.Name == dto.Category);
                 if (category == null)
                     return BadRequest(new ResponseHelper().BadRequest("Invalid category"));
-
                 var product = new Product
                 {
                     Name = dto.Name,
@@ -92,10 +92,26 @@ namespace E_Commerce.Controllers
                     Description = dto.Description,
                     Price = dto.Price,
                     Stock = dto.Stock,
-                    Category = category
+                    Category = category,
+                    
                 };
-
                 unitOfWork.ProductRepo.Create(product);
+                await unitOfWork.SaveChangesAsync();
+
+                List<Image> images = new List<Image>();
+                foreach(var img in dto.ImageUrls)
+                {
+                    unitOfWork.ImageRepo.Create(new Image()
+                    {
+                        AltText = dto.Name,
+                        URL = img,
+                        ProductId = product.Id
+                    });
+                }
+
+
+                
+
                 await unitOfWork.SaveChangesAsync();
 
                 dto.Id = product.Id;

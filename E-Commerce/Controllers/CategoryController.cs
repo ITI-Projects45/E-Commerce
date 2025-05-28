@@ -11,7 +11,8 @@ namespace E_Commerce.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles ="admin")]
+    //[Authorize(Roles = "admin")]
+    [AllowAnonymous]
     public class CategoryController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;

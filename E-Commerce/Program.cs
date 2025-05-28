@@ -42,7 +42,7 @@ namespace E_Commerce
             // Register DataBase
             builder.Services.AddDbContext<DataBaseContext>(option =>
             {
-                option.UseSqlServer(builder.Configuration.GetConnectionString("CS"));
+                option.UseSqlServer(builder.Configuration.GetConnectionString("Cs"));
             });
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
                .AddEntityFrameworkStores<DataBaseContext>()
@@ -128,11 +128,11 @@ namespace E_Commerce
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
+           // if (app.Environment.IsDevelopment())
+           // {
                 app.UseSwagger();
                 app.UseSwaggerUI();
-            }
+            //}
 
             app.UseStaticFiles(); //read image  
 

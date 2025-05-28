@@ -202,15 +202,15 @@ namespace E_Commerce.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("ProductId")
-                        .HasColumnType("int");
-
                     b.Property<string>("URL")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("projectId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("projectId");
 
                     b.ToTable("Images");
                 });
@@ -554,7 +554,9 @@ namespace E_Commerce.Migrations
                 {
                     b.HasOne("E_Commerce.Models.Product", "Product")
                         .WithMany("Images")
-                        .HasForeignKey("ProductId");
+                        .HasForeignKey("projectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Product");
                 });

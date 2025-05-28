@@ -14,5 +14,6 @@ namespace E_Commerce.Repos.Repository
         public ImageRepository(DataBaseContext DataBaseContext) : base(DataBaseContext)
         {
         }
+
     }
 }

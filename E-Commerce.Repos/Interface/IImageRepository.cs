@@ -9,5 +9,6 @@ namespace E_Commerce.Repos.Interface
 {
      public interface IImageRepository:IRepository<Image>
     {
+
     }
 }

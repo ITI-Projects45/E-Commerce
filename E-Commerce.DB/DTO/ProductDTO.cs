@@ -19,5 +19,7 @@ namespace E_Commerce.Repos.DTOs
         public string? Brand { get; set; }
         public string? Category { get; set; }
 
+        public List<string>? ImageUrls { get; set; } 
+
     }
 }

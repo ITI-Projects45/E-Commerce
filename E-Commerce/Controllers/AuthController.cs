@@ -125,17 +125,22 @@ namespace E_Commerce.Controllers
             string jti = Guid.NewGuid().ToString();
             var uerRole = await userManger.GetRolesAsync(applicationUser);
             List<Claim> claim = new List<Claim>();
-            claim.Add(new Claim(ClaimTypes.NameIdentifier, applicationUser.Id));
-            claim.Add(new Claim(ClaimTypes.Name, applicationUser.UserName));
+            claim.Add(new Claim("id", applicationUser.Id));
+            claim.Add(new Claim("name", applicationUser.UserName));
+            claim.Add(new Claim("email", applicationUser.Email));
+            claim.Add(new Claim("imageurl", applicationUser.imageurl ?? ""));
+
             claim.Add(new Claim(JwtRegisteredClaimNames.Jti, jti));
 
             if (uerRole != null)
             {
                 foreach (var role in uerRole)
                 {
-                    claim.Add(new Claim(ClaimTypes.Role, role));
+                    claim.Add(new Claim("roles", role));
                 }
             }
+
+            var expireDate = DateTime.Now.AddDays(2); 
 
             SymmetricSecurityKey signinKey =
                            new(Encoding.UTF8.GetBytes(config["JWT:Key"]));
@@ -146,14 +151,14 @@ namespace E_Commerce.Controllers
             JwtSecurityToken myToken = new JwtSecurityToken(
                 issuer: config["JWT:Iss"],
                 audience: config["JWT:Aud"],
-                expires: DateTime.Now.AddHours(1),
+                expires: expireDate,
                 claims: claim,
                 signingCredentials: signingCredentials
                 );
 
             return new
             {
-                expired = DateTime.Now.AddHours(1),
+                expired = expireDate,
                 token = new JwtSecurityTokenHandler().WriteToken(myToken)
             };
         }

@@ -10,7 +10,8 @@ namespace E_Commerce.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "admin")]
+    //[Authorize(Roles = "admin")]
+    [AllowAnonymous]
     public class ImageController : ControllerBase
     {
         private readonly IUnitOfWork unitOfWork;

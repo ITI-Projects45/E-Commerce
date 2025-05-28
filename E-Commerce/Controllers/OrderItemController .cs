@@ -9,7 +9,7 @@ namespace E_Commerce.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "admin")]
+    [AllowAnonymous]
     public class OrderItemController : ControllerBase
     {
         private readonly IUnitOfWork unitOfWork;

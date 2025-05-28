@@ -1,4 +1,6 @@
-﻿namespace E_Commerce.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace E_Commerce.Models
 {
     public class Image
     {
@@ -8,6 +10,9 @@
 
         public  bool IsDeleted { get; set; }
 
+        public int ProductId { get; set; }
+
+        [ForeignKey("ProductId")]
         public Product? Product { get; set; }
     }
 }
