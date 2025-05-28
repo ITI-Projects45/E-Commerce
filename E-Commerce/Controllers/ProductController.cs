@@ -62,7 +62,7 @@ namespace E_Commerce.Controllers
                     Description = product.Description,
                     Price = product.Price,
                     Stock = product.Stock,
-                    Category = product.Category.Name,
+                    Category = product.Category.Name??"No Category Assigned",
                 };
 
                 return Ok(new ResponseHelper().Success(productDTO));

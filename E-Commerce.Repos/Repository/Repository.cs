@@ -31,7 +31,7 @@ namespace E_Commerce.Repos.Repository
             return _DataBaseContext.Set<T>().Skip((page-1) * 10).Take(10);
         }
 
-        public T GetById(int id)
+        public virtual T GetById(int id)
         {
             return _DataBaseContext.Set<T>().Find(id);
         }
